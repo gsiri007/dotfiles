@@ -26,9 +26,10 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	/* class                    instance     title       tags mask     isfloating   monitor */
+	{ "Firefox",                  NULL,       NULL,       1 << 0,       0,           -1 },
+	{ "thunderbird_thunderbird",  NULL,       NULL,       1 << 7,       0,           -1 },
+	{ "KeePassXC",                NULL,       NULL,       1 << 8,       0,           -1 },
 };
 
 /* layout(s) */
@@ -46,6 +47,7 @@ static const Layout layouts[] = {
 };
 
 /* key definitions */
+#include <X11/XF86keysym.h>
 #define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
@@ -58,12 +60,22 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
+static const char *upvol[]   = { "/usr/bin/wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", "5%+", NULL };
+static const char *downvol[] = { "/usr/bin/wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", "5%-", NULL };
+static const char *mutevol[] = { "/usr/bin/wpctl", "set-mute",   "@DEFAULT_AUDIO_SINK@", "toggle", NULL };
+static const char *brup[]    = { "/usr/bin/brightnessctl", "set", "5%+", NULL };
+static const char *brdown[]  = { "/usr/bin/brightnessctl", "set", "5%-", NULL };
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "alacritty", NULL };
 static const char *roficmd[]  = {"rofi", "-show", "drun", NULL};
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
+	{ 0,                            XF86XK_AudioRaiseVolume,  spawn, {.v = upvol } },
+	{ 0,                            XF86XK_AudioLowerVolume,  spawn, {.v = downvol } },
+	{ 0,                            XF86XK_AudioMute,         spawn, {.v = mutevol } },
+	{ 0,                            XF86XK_MonBrightnessUp,   spawn, {.v = brup } },
+	{ 0,                            XF86XK_MonBrightnessDown, spawn, {.v = brdown } },
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_r,      spawn,          {.v = roficmd } },
