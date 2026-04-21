@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+firefox &
+thunderbird &
+keepassxc &
+exec /home/siri/dwm/dwm
